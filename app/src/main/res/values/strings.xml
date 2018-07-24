@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="weather">Weather</string>
+    <string name="city_name">City Name ...</string>
+    <string name="get_weather">Get Weather</string>
+    <string name="weathers">Weather</string>
+    <string name="description">Description</string>
+    <string name="humidity">Humidity</string>
+    <string name="temperature">Temperature</string>
+    <string name="place">Place</string>
+</resources>
