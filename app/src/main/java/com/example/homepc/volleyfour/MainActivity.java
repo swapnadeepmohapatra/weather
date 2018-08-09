@@ -4,7 +4,6 @@ package com.example.homepc.volleyfour;
 //All Rights Reserved
 
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +18,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.ImageRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //AdMob
         MobileAds.initialize(this, "ca-app-pub-7589870232837078~4656918164");
 
         interstitialAd = new InterstitialAd(this);
@@ -123,38 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
                                     // Weather Icon URL
                                     String weatherIcon = parObj.getString("icon");
-                                    Log.i("Icon", "Icon : " + weatherIcon);
-
                                     final String imgMyUrl = "http://www.openweathermap.org/img/w/" + weatherIcon + ".png";
 
-                                    // Image For The Weather
-                                    ImageRequest imageRequest = new ImageRequest(
-                                            imgMyUrl,
-                                            new Response.Listener<Bitmap>() {
-                                                @Override
-                                                public void onResponse(Bitmap response) {
-                                                    imageView.setImageBitmap(response);
-                                                    imageView.setVisibility(View.VISIBLE);
-
-                                                }
-                                            }, 0, 0, null,
-                                            new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    Log.i("Error", "Error");
-                                                }
-                                            }
-                                    );
-                                    MySingelton.getInstance(MainActivity.this).addToRequestQue(imageRequest);
+                                    // Loading Image
+                                    Picasso.get().load(imgMyUrl).into(imageView);
+                                    imageView.setVisibility(View.VISIBLE);
                                 }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
 
-                            // Temperature and Humidity
+                                // Temperature and Humidity
 
-                            try {
                                 String in = response.getString("main");
 
                                 JSONObject co = new JSONObject(in);
@@ -181,16 +159,17 @@ public class MainActivity extends AppCompatActivity {
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             }
                         }
-
                         // Error
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.i("Error", "Err: " + error);
                             String err = error.toString();
-                            Toast.makeText(MainActivity.this, err, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, err, Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
                         }
                     });
                     MySingelton.getInstance(MainActivity.this).addToRequestQue(jsonObjectRequest);
